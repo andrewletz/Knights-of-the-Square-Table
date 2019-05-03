@@ -19,7 +19,6 @@ public class PlayerHit : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
     	if (other.CompareTag("mortal")) {
     		other.GetComponent<EnemyController>().Death();
-    		Debug.Log("Called");
     	}
     }
 }
