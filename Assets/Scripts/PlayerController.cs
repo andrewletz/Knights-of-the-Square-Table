@@ -21,9 +21,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void move() {
-		Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-		Vector3 rightMovement = right * speed * Time.deltaTime * Input.GetAxis("Horizontal");
-		Vector3 upMovement = forward * speed * Time.deltaTime * Input.GetAxis("Vertical");
+		Vector3 direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+		Vector3 rightMovement = right * speed * Time.deltaTime * Input.GetAxisRaw("Horizontal");
+		Vector3 upMovement = forward * speed * Time.deltaTime * Input.GetAxisRaw("Vertical");
 
 		Vector3 mouse = Input.mousePosition;
 		Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
