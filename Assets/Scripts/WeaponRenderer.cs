@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class WeaponRenderer : MonoBehaviour
 {
-
-    private bool animating = false;
-    private int swipeRange = 120;
-
+    // called by weapon controller to set Y to opposite of rotation
     void SetYAngle(float angle) 
     {
         transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, angle, transform.localEulerAngles.z);
@@ -18,6 +15,9 @@ public class WeaponRenderer : MonoBehaviour
         transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, angle);
     }
 
+    //private bool animating = false;
+    /* Old swipe animation -- left for reference
+    //private int swipeRange = 120;
     void AttackAnimation(float angle)
     {
         //Quaternion from = Quaternion.Euler(transform.localEulerAngles.x, transform.localEulerAngles.y, angle + 90);
@@ -51,4 +51,6 @@ public class WeaponRenderer : MonoBehaviour
             animating = false;
         }
     }
+    */
+
 }

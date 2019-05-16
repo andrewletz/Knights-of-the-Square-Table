@@ -38,17 +38,24 @@ public class PlayerControllerFloating : MonoBehaviour {
         if (Input.GetButtonDown("attack") && currentState != PlayerState.attack) {
             //StartCoroutine(AttackCo());
             //weapon.SendMessage("StartAttackAnimation");
+
+            // cast ray down from mouse position to find where the mouse is on the floor
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
+
+            // won't be true if the normal isn't 1 (flat surface)
             if (Physics.Raycast(ray, out hit) && hit.normal.y > 0.999)
             {
                 Vector3 target = hit.point;
+
+                // bump the position of the mouse so the flame pillar comes out at the right spot
                 target.y += 0.5f;
                 target.z += 0.5f;
                 orb.SendMessage("CastSpell", target);
             }
         }
         
+        // send angle of mouse to weapon controller
         Vector3 screenPlayerPos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 relativePos = mousePos - screenPlayerPos;
         float angle = Mathf.Atan2((float)((int)relativePos.y), (float)((int)relativePos.x)) * Mathf.Rad2Deg;

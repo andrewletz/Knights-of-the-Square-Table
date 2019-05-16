@@ -26,17 +26,17 @@ public class WeaponController : MonoBehaviour
         weaponRenderer.SendMessage("SetYAngle", -transform.localEulerAngles.y);
     }
 
-    void StartAttackAnimation()
-    {
-        float angleSword = Mathf.Abs(angle - 90) + 45;
-        weaponRenderer.SendMessage("AttackAnimation", angleSword);
-    }
-
     // called by player controller to pass mouse angle
     void GetAngle(float newAngle) 
     {
         this.angle = newAngle;
     }
+
+    //void StartAttackAnimation()
+    //{
+    //    float angleSword = Mathf.Abs(angle - 90) + 45;
+    //    weaponRenderer.SendMessage("AttackAnimation", angleSword);
+    //}
 
     // public float radius = 0.6f;
     // public float height = 0.2f;

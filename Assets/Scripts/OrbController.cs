@@ -24,8 +24,10 @@ public class OrbController : MonoBehaviour
 
     void Update()
     {
+        // grabs the position of the floating weapon so we can rotate the orb around it
         weaponSpritePosition = transform.parent.GetChild(0).transform.position;
-        if (!travelling)
+
+        if (!travelling) // if the orb isn't in movement, rotate it around the weapon
         {
             angle += rotateSpeed * Time.deltaTime;
             Vector3 offset = new Vector3(Mathf.Cos(angle), height, Mathf.Sin(angle)) * radius;
@@ -38,11 +40,14 @@ public class OrbController : MonoBehaviour
         StartCoroutine(Spell(clickPos, 0.5f));
     }
 
+    // travels to clickPos over travelTime (in seconds) and casts flame pillar
     IEnumerator Spell(Vector3 clickPos, float travelTime)
     {
         if (!travelling)
         {
             travelling = true;
+
+            // travel towards the click position
             Vector3 startPosition = transform.position;
             float startTime = Time.time;
             float endTime = startTime + travelTime;
@@ -54,9 +59,11 @@ public class OrbController : MonoBehaviour
                 yield return null;
             }
 
+            // spawn the spell
             yield return null;
             Instantiate(FlamePillar, clickPos, Quaternion.Euler(new Vector3(45, 0, 0)));
 
+            // travel back to the weapon sprite
             startTime = Time.time;
             endTime = startTime + travelTime;
             yield return null;
