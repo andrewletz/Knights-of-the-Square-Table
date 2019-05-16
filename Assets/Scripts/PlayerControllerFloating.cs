@@ -17,6 +17,7 @@ public class PlayerControllerFloating : MonoBehaviour {
 	private Animator animator;
 
 	private GameObject weapon;
+    private GameObject orb;
 
 	void Start() {
 		animator = GetComponentInChildren<Animator>();
@@ -27,18 +28,27 @@ public class PlayerControllerFloating : MonoBehaviour {
 			Transform currentTransform = transform.GetChild(i).transform;
 			if (currentTransform.name == "Weapon") {
 				this.weapon = currentTransform.gameObject;
+                this.orb = currentTransform.GetChild(1).gameObject;
 			}
 		}
 	}
 
 	void Update() {
+        Vector3 mousePos = Input.mousePosition;
         if (Input.GetButtonDown("attack") && currentState != PlayerState.attack) {
             //StartCoroutine(AttackCo());
-            weapon.SendMessage("StartAttackAnimation");
+            //weapon.SendMessage("StartAttackAnimation");
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit) && hit.normal.y > 0.999)
+            {
+                Vector3 target = hit.point;
+                target.y += 0.5f;
+                target.z += 0.5f;
+                orb.SendMessage("CastSpell", target);
+            }
         }
-
-        Vector3 mousePos = Input.mousePosition;
-        //Debug.Log(mousePos);
+        
         Vector3 screenPlayerPos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 relativePos = mousePos - screenPlayerPos;
         float angle = Mathf.Atan2((float)((int)relativePos.y), (float)((int)relativePos.x)) * Mathf.Rad2Deg;
