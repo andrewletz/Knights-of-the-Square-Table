@@ -35,7 +35,7 @@ public class OrbController : MonoBehaviour
 
     void CastSpell(Vector3 clickPos)
     {
-        StartCoroutine(Spell(clickPos, 1f));
+        StartCoroutine(Spell(clickPos, 0.5f));
     }
 
     IEnumerator Spell(Vector3 clickPos, float travelTime)
@@ -50,7 +50,7 @@ public class OrbController : MonoBehaviour
             while (Time.time < endTime)
             {
                 float progress = (Time.time - startTime) / travelTime;
-                transform.position = Vector3.Lerp(startPosition, clickPos, progress);
+                transform.position = Vector3.Slerp(startPosition, clickPos, progress);
                 yield return null;
             }
 
@@ -63,7 +63,7 @@ public class OrbController : MonoBehaviour
             while (Time.time < endTime)
             {
                 float progress = (Time.time - startTime) / travelTime;
-                transform.position = Vector3.Lerp(clickPos, weaponSpritePosition, progress);
+                transform.position = Vector3.Slerp(clickPos, weaponSpritePosition, progress);
                 yield return null;
             }
 
