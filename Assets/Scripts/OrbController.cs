@@ -43,12 +43,19 @@ public class OrbController : MonoBehaviour
     // travels to clickPos over travelTime (in seconds) and casts flame pillar
     IEnumerator Spell(Vector3 clickPos, float travelTime)
     {
-        if (!travelling)
+        Vector3 startPosition = transform.position;
+        RaycastHit hit;
+        
+        bool hitWall = false;
+        if (Physics.Linecast(startPosition, clickPos, out hit) && hit.transform.tag == "Wall"){
+            hitWall = true;
+        }
+        
+        if (!travelling && !hitWall)
         {
             travelling = true;
 
             // travel towards the click position
-            Vector3 startPosition = transform.position;
             float startTime = Time.time;
             float endTime = startTime + travelTime;
             yield return null;

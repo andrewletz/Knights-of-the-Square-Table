@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 // public enum PlayerState {
 // 	Walk,
 // 	Attack,
@@ -51,8 +52,9 @@ public class PlayerControllerFloating : MonoBehaviour {
             RaycastHit hit;
 
             // won't be true if the normal isn't 1 (flat surface)
-            if (Physics.Raycast(ray, out hit) && hit.normal.y > 0.999)
+            if (Physics.Raycast(ray, out hit))
             {
+
                 Vector3 target = hit.point;
 
                 // bump the position of the mouse so the flame pillar comes out at the right spot
@@ -100,7 +102,6 @@ public class PlayerControllerFloating : MonoBehaviour {
     }
 
     public void Hit(int damage) {
-    	Debug.Log("hit");
         playerHealth = playerHealth - damage;
         float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
         healthBar.localScale = new Vector3(healthPct, 1);
