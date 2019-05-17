@@ -12,16 +12,23 @@ public class PlayerControllerFloating : MonoBehaviour {
 
 	public float speed = 10.0f;
 	public PlayerState currentState;
+	public int maxPlayerHealth = 100;
 
+	public GameObject gameOverPanel;
+
+	private int playerHealth;
 	private Rigidbody rigidBody;
 	private Animator animator;
-
+	private Transform healthBar;
 	private GameObject weapon;
     private GameObject orb;
 
 	void Start() {
 		animator = GetComponentInChildren<Animator>();
 		rigidBody = GetComponent<Rigidbody>();
+		playerHealth = maxPlayerHealth;
+		healthBar = this.transform.Find("Bar");
+		gameOverPanel.SetActive(false);
 
 		// get our weapon object once at start time
 		for (int i = 0; i < transform.childCount; i++) {
@@ -86,6 +93,21 @@ public class PlayerControllerFloating : MonoBehaviour {
 			animator.SetBool("moving", false);
 		}
 	}
+
+    public void Death() {
+    	gameOverPanel.SetActive(true);
+    	this.gameObject.SetActive(false);
+    }
+
+    public void Hit(int damage) {
+    	Debug.Log("hit");
+        playerHealth = playerHealth - damage;
+        float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
+        healthBar.localScale = new Vector3(healthPct, 1);
+        
+        if (healthPct == 0.0f)
+            Death();
+    }
 
 	// private IEnumerator AttackCo() {
 	// 	animator.SetBool("attacking", true);
