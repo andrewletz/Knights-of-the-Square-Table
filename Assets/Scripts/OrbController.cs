@@ -45,6 +45,8 @@ public class OrbController : MonoBehaviour
     {
         Vector3 startPosition = transform.position;
         RaycastHit hit;
+
+        clickPos = new Vector3(clickPos.x, -4.5f, clickPos.z);
         
         bool hitWall = false;
         if (Physics.Linecast(startPosition, clickPos, out hit) && hit.transform.tag == "Wall"){

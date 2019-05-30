@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -16,9 +17,20 @@ public class MapGenerator : MonoBehaviour
     private int[,] floorMap;
     private System.Random randNumGen;
     private MeshGenerator meshGen;
+    private NavMeshSurface navMeshSurface;
 
-    void Start(){
+    public void BuildMap(){
+        navMeshSurface = GetComponentInChildren<NavMeshSurface>();
+        ClearMap();
         GenMap();
+        navMeshSurface.BuildNavMesh();
+    }
+
+    public void ClearMap(){
+        if (meshGen){
+            meshGen.ClearMesh();
+        }
+        
     }
 
     void GenMap(){
@@ -354,7 +366,7 @@ public class MapGenerator : MonoBehaviour
                 break;
             }
 
-            GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy1.prefab", typeof(GameObject))) as GameObject;
+            GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy5.prefab", typeof(GameObject))) as GameObject;
             Vector3 enemyLoc = CoordToWorldPoint(spawnLocs[randNumGen.Next(0,spawnLocs.Count-1)], wall_height);
             enemyLoc.y += 0.5f;
             enemy.transform.position = enemyLoc;

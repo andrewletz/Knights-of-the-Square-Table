@@ -10,12 +10,24 @@ public class MeshGenerator : MonoBehaviour
     public GameObject floor, wallMesh;
     public Texture floorMat;
     private SquareGrid grid;
+
+
+
+// These are done
     private List<Vector3> vertices;
     private List<int> triangles;
     private Dictionary<int,List<Triangle>> triangleDict = new Dictionary<int,List<Triangle>>();
     private List<List<int>> outlines = new List<List<int>>();
     private HashSet<int> checkedVertices = new HashSet<int>();
-    private NavMeshSurface navMeshSurface = GetComponent<NavMeshSurface>();
+    
+
+    public void ClearMesh(){
+        Debug.Log(walls.mesh);
+        if (walls.mesh){
+            Destroy(walls.gameObject.GetComponent<MeshCollider>());
+        }
+        
+    }
     
     public void GenerateMesh(int[,] map, float squareSize){
         triangleDict.Clear();
@@ -48,7 +60,6 @@ public class MeshGenerator : MonoBehaviour
         mesh.uv = uvs;
 
         CreateWallMesh(map, squareSize);
-        navMeshSurface.BuildNavMesh();
     }
 
     public void CreatePlane(int width, int height){

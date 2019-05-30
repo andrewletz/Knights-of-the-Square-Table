@@ -8,6 +8,6 @@ public class DestroyAfterAnimation : MonoBehaviour
     {
         Destroy(GetComponent<Animator>());
         Destroy(GetComponent<SpriteRenderer>());
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 }
