@@ -1,4 +1,11 @@
-﻿using UnityEngine;
+﻿/*
+CREDIT: http://wiki.unity3d.com/index.php?title=DontGoThroughThings
+
+Unity pre-defined script to fix collision issues with mesh colliders
+*/
+
+
+using UnityEngine;
 using System.Collections;
  
 public class DontGoThroughThings : MonoBehaviour

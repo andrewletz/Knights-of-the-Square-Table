@@ -44,6 +44,7 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+        
         meshGen.GenerateMesh(borderedMap, 1);
     }
 
@@ -135,6 +136,7 @@ public class MapGenerator : MonoBehaviour
 
         ConnectCaverns(cavernRooms);
 
+        CreateExit(cavernRooms[randNumGen.Next(0,cavernRooms.Count)]);
         InitializeMap(cavernRooms[randNumGen.Next(0,cavernRooms.Count)]);
 
         void exploreNeighbors(int x, int y, Queue<(int,int)> neighbors){
@@ -261,6 +263,31 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void ExitPath(Tile A_tile, Tile B_tile){
+        List<Tile> line = GetLine(A_tile, B_tile);
+        foreach (Tile t in line){
+            DrawCircle(t,5);
+        }
+    }
+    
+    void CreateExit(Room cavern){
+        Tile exitPos = cavern.edgeTiles[randNumGen.Next(0,cavern.edgeTiles.Count-1)];
+        int left = exitPos.X, right = width-exitPos.X, bottom = exitPos.Y, top = height-exitPos.Y, exitPoint = Math.Min(Math.Min(left,right),Math.Min(bottom,top));
+
+        if (exitPoint==left){
+            ExitPath(exitPos, new Tile(0, exitPos.Y));
+        }
+        else if (exitPoint==right){
+            ExitPath(exitPos, new Tile(width, exitPos.Y));
+        }
+        else if (exitPoint==bottom){
+            ExitPath(exitPos, new Tile(exitPos.X, 0));
+        }
+        else if (exitPoint==top){
+            ExitPath(exitPos, new Tile(exitPos.X, height));
+        }
+    }
+
     void DrawCircle(Tile t, int rad){
         for (int x = -rad; x <= rad; x++){
             for (int y = -rad; y <= rad; y++){
@@ -349,6 +376,7 @@ public class MapGenerator : MonoBehaviour
 
         List<Tile> spawnLocs = mainCavern.tiles;
         DrawSpawnCircle(player, spawnLocs, 5);
+        /*
         for (int i=0; i<numEnemies; i++){
             if (spawnLocs.Count < 1){
                 break;
@@ -362,6 +390,7 @@ public class MapGenerator : MonoBehaviour
             enemy.SetActive(true);
             DrawSpawnCircle(player, spawnLocs, 2);
         }
+        */
 
         playerObject.SetActive(true);
         lightObject.SetActive(true);
