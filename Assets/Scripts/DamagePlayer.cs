@@ -8,7 +8,7 @@ public class DamagePlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
     	if (other.CompareTag("Player")) {
-    		other.GetComponent<PlayerControllerFloating>().Hit(damage);
+    		other.GetComponent<PlayerController>().Hit(damage);
     	}
     }
 }

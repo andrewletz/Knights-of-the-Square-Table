@@ -274,6 +274,24 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void DrawSpawnCircle(Tile t, List<Tile> tiles, int rad){
+        for (int x = -rad; x <= rad; x++){
+            for (int y = -rad; y <= rad; y++){
+                if (x*x + y*y <= rad*rad){
+                    int realX = t.X+x, realY = t.Y+y;
+                    if (IsInMapRange(realX,realY)){
+                        floorMap[realX,realY] = 0;
+                        for (int i=0; i<tiles.Count; i++){
+                            if (tiles[i].X == realX && tiles[i].Y == realY){
+                                tiles.RemoveAt(i);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     bool IsInMapRange(int x, int y){
         return x >= 0 && x < width && y >= 0 && y < height;
     }
@@ -325,7 +343,26 @@ public class MapGenerator : MonoBehaviour
         double tolerance = .80 * mainCavern.tiles.Count, enemyTolerance = .25 * mainCavern.tiles.Count;
         int wall_height = -1 * meshGen.WallHeight();
 
-        playerObject.transform.position = CoordToWorldPoint(player, wall_height);
+        Vector3 playerPos = CoordToWorldPoint(player, wall_height);
+        playerPos.y += 0.5f;
+        playerObject.transform.position = playerPos;
+
+        List<Tile> spawnLocs = mainCavern.tiles;
+        DrawSpawnCircle(player, spawnLocs, 5);
+        for (int i=0; i<numEnemies; i++){
+            if (spawnLocs.Count < 1){
+                break;
+            }
+
+            GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy1.prefab", typeof(GameObject))) as GameObject;
+            Vector3 enemyLoc = CoordToWorldPoint(spawnLocs[randNumGen.Next(0,spawnLocs.Count-1)], wall_height);
+            enemyLoc.y += 0.5f;
+            enemy.transform.position = enemyLoc;
+            enemy.GetComponent<EnemyController>().target = playerObject;
+            enemy.SetActive(true);
+            DrawSpawnCircle(player, spawnLocs, 2);
+        }
+
         playerObject.SetActive(true);
         lightObject.SetActive(true);
         cameraObject.SetActive(true);

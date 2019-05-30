@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MeshGenerator : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class MeshGenerator : MonoBehaviour
     private Dictionary<int,List<Triangle>> triangleDict = new Dictionary<int,List<Triangle>>();
     private List<List<int>> outlines = new List<List<int>>();
     private HashSet<int> checkedVertices = new HashSet<int>();
+    private NavMeshSurface navMeshSurface = GetComponent<NavMeshSurface>();
     
     public void GenerateMesh(int[,] map, float squareSize){
         triangleDict.Clear();
@@ -46,6 +48,7 @@ public class MeshGenerator : MonoBehaviour
         mesh.uv = uvs;
 
         CreateWallMesh(map, squareSize);
+        navMeshSurface.BuildNavMesh();
     }
 
     public void CreatePlane(int width, int height){

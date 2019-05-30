@@ -9,7 +9,6 @@ public class EnemyController : MonoBehaviour
     public GameObject target;
     public float stopDistance = 1.0f;
     public int maxEnemyHealth = 100;
-    public EnemyCounter enemyCounter;
 
     private int enemyHealth;
     private NavMeshAgent navMeshAgent;
@@ -22,7 +21,6 @@ public class EnemyController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.stoppingDistance = stopDistance;
         anim = GetComponentInChildren<Animator>();
-        // enemyCounter.enemySpawned();
 
         healthBar = this.transform.Find("Bar");
         enemyHealth = maxEnemyHealth;
@@ -34,6 +32,10 @@ public class EnemyController : MonoBehaviour
     }
 
     void Update() {
+        if (!target){
+            return;
+        }
+
         navMeshAgent.SetDestination(target.transform.position);
         
         if (target.active == true) {
@@ -57,7 +59,6 @@ public class EnemyController : MonoBehaviour
         anim.SetBool("isDed", true);
         this.gameObject.GetComponent<Rigidbody>().detectCollisions = false;
         navMeshAgent.isStopped = true;
-        enemyCounter.enemyDied();
         StartCoroutine(deathCo());
     }
 
