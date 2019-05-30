@@ -7,12 +7,15 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     [Range(0,100)]
-    public int fillPercentage, cavernThreshold;
-    public int width, height, smoothingIterations;
+    public int fillPercentage;
+    public int width, height, smoothingIterations, borderSize, cavernThreshold, numEnemies;
     public string randomSeed;
     public bool useRandomSeed;
+    public GameObject playerObject, cameraObject, lightObject;
 
     private int[,] floorMap;
+    private System.Random randNumGen;
+    private MeshGenerator meshGen;
 
     void Start(){
         GenMap();
@@ -24,7 +27,24 @@ public class MapGenerator : MonoBehaviour
         for (int i=0; i<smoothingIterations; i++){
             CellularSmooth();
         }
+
+        meshGen = GetComponent<MeshGenerator>();
+        meshGen.CreatePlane(width+borderSize*2,height+borderSize*2);
         removeCaverns();
+
+        int[,] borderedMap = new int[width+borderSize*2, height+borderSize*2];
+
+        for (int x=0; x<borderedMap.GetLength(0); x++){
+            for (int y=0; y<borderedMap.GetLength(1); y++){
+                if (x >= borderSize && x < width+borderSize && y >= borderSize && y < height+borderSize){
+                    borderedMap[x,y] = floorMap[x-borderSize,y-borderSize];
+                }
+                else {
+                    borderedMap[x,y] = 1;
+                }
+            }
+        }
+        meshGen.GenerateMesh(borderedMap, 1);
     }
 
     void RenderMap(){
@@ -32,7 +52,7 @@ public class MapGenerator : MonoBehaviour
             randomSeed = Time.time.ToString();
         }
 
-        System.Random randNumGen = new System.Random(randomSeed.GetHashCode());
+        randNumGen = new System.Random(randomSeed.GetHashCode());
 
         for (int x=0; x<width; x++){
             for (int y=0; y<height; y++){
@@ -80,40 +100,42 @@ public class MapGenerator : MonoBehaviour
 
     void removeCaverns(){
         bool[,] visited = new bool[width,height];
-        int i=0, mainCavern=-1;
-        (int,int) mainCoords=(5,5);
         Dictionary<(int,int), int> caverns = new Dictionary<(int,int), int>();
+        List<Room> cavernRooms = new List<Room>();
 
         for (int x=0; x<width; x++){
             for (int y=0; y<height; y++){
                 if (!visited[x,y] && floorMap[x,y] == 0){
+
                     visited[x,y] = true;
                     caverns[(x,y)] = 1;
+
+                    List<Tile> cavernTiles = new List<Tile>();
+                    cavernTiles.Add(new Tile(x,y));
+
                     Queue<(int,int)> neighbors = new Queue<(int,int)>();
                     exploreNeighbors(x,y,neighbors);
 
                     while (neighbors.Count > 0){
                         caverns[(x,y)]++;
                         (int next_x, int next_y) = neighbors.Dequeue();
+
+                        cavernTiles.Add(new Tile(next_x, next_y));
                         exploreNeighbors(next_x,next_y,neighbors);
                     }
+
+                    cavernRooms.Add(new Room(cavernTiles, floorMap));
                 }
             }
         }
 
-        var caverns_sorted = from pair in caverns orderby pair.Value descending select pair;
+        cavernRooms.Sort();
+        cavernRooms[0].mainRoom = true;
+        cavernRooms[0].accessible = true;
 
-        foreach (KeyValuePair<(int, int), int> pair in caverns_sorted){
-            if (i++ == 0){
-                mainCavern = pair.Value;
-                mainCoords = pair.Key;
-                continue;
-            }
+        ConnectCaverns(cavernRooms);
 
-            if (pair.Value / mainCavern >= cavernThreshold/100){
-                createPath(pair.Key, mainCoords);
-            }
-        }
+        InitializeMap(cavernRooms[randNumGen.Next(0,cavernRooms.Count)]);
 
         void exploreNeighbors(int x, int y, Queue<(int,int)> neighbors){
             if (x>0 && x<width-1 && y>0 && y<height-1){
@@ -148,8 +170,239 @@ public class MapGenerator : MonoBehaviour
                 floorMap[minY_x, it] = 0;
             }
         }
+
+        void fillCavern(Room cavern){
+            foreach (Tile tile in cavern.tiles){
+                floorMap[tile.X, tile.Y] = 1;
+            }
+        }
     }
 
+    void ConnectCaverns(List<Room> caverns, bool forceAccessibility=false){
+
+        int bestDist = 0;
+        bool possibleConnectionFound = false;
+        Tile bestA_tile = new Tile(), bestB_tile = new Tile();
+        Room bestA = new Room(), bestB = new Room();
+        List<Room> a_rooms = new List<Room>(), b_rooms = new List<Room>();
+
+        if (forceAccessibility){
+            foreach (Room cavern in caverns){
+                if (cavern.accessible){
+                    b_rooms.Add(cavern);
+                }
+                else {
+                    a_rooms.Add(cavern);
+                }
+            }
+        }
+        else {
+            a_rooms = caverns;
+            b_rooms = caverns;
+        }
+
+        foreach(Room cavern in a_rooms){
+            if (!forceAccessibility){
+                possibleConnectionFound = false;
+                if (cavern.connectedRooms.Count > 0){
+                    continue;
+                }
+            }
+
+            foreach(Room other in b_rooms){
+                
+                if (cavern == other || cavern.IsConnected(other)){
+                    continue;
+                }
+
+
+
+                for (int A=0; A<cavern.edgeTiles.Count; A++){
+                    for (int B=0; B<other.edgeTiles.Count; B++){
+                        Tile tileA = cavern.edgeTiles[A];
+                        Tile tileB = other.edgeTiles[B];
+                        int dist = (int)(Mathf.Pow(tileA.X-tileB.X,2) + Mathf.Pow(tileA.Y-tileB.Y,2));
+
+                        if (dist < bestDist || !possibleConnectionFound){
+                            bestDist = dist;
+                            possibleConnectionFound = true;
+                            bestA_tile = tileA;
+                            bestB_tile = tileB;
+                            bestA = cavern;
+                            bestB = other;
+                        }
+                    }
+                }
+
+            }
+
+            if (possibleConnectionFound && !forceAccessibility){
+                CreatePassage(bestA, bestB, bestA_tile, bestB_tile);
+            }
+        }
+
+        if (possibleConnectionFound && forceAccessibility){
+            CreatePassage(bestA, bestB, bestA_tile, bestB_tile);
+            ConnectCaverns(caverns, true);
+        }
+
+        if (!forceAccessibility){
+            ConnectCaverns(caverns, true);
+        }
+    }
+
+    void CreatePassage(Room A, Room B, Tile A_tile, Tile B_tile){
+        Room.Connect(A, B);
+        Debug.DrawLine (CoordToWorldPoint(A_tile,2),CoordToWorldPoint(B_tile,2), Color.green, 100);
+
+        List<Tile> line = GetLine(A_tile, B_tile);
+        foreach (Tile t in line){
+            DrawCircle(t,5);
+        }
+    }
+
+    void DrawCircle(Tile t, int rad){
+        for (int x = -rad; x <= rad; x++){
+            for (int y = -rad; y <= rad; y++){
+                if (x*x + y*y <= rad*rad){
+                    int realX = t.X+x, realY = t.Y+y;
+                    if (IsInMapRange(realX,realY)){
+                        floorMap[realX,realY] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    bool IsInMapRange(int x, int y){
+        return x >= 0 && x < width && y >= 0 && y < height;
+    }
+
+    List<Tile> GetLine(Tile from, Tile to){
+        List<Tile> line = new List<Tile>();
+        int x = from.X, y = from.Y, dx = to.X - x, dy = to.Y - y, step = Math.Sign(dx), gradientStep = Math.Sign(dy), longest = Math.Abs(dx), shortest = Math.Abs(dy);
+        bool inverted = false;
+
+        if (longest < shortest){
+            inverted = true;
+            longest = Mathf.Abs(dy);
+            shortest = Mathf.Abs(dx);
+            step = Math.Sign(dy);
+            gradientStep = Math.Sign(dx);
+        }
+
+        int accumulation = longest / 2;
+        for (int i=0; i<longest; i++){
+            line.Add(new Tile(x,y));
+
+            if (inverted){
+                y += step;
+            }
+            else {
+                x += step;
+            }
+
+            accumulation += shortest;
+            if (accumulation >= longest){
+                if (inverted){
+                    x += gradientStep;
+                }
+                else {
+                    y += gradientStep;
+                }
+                accumulation -= longest;
+            }
+        }
+        return line;
+    }
+
+    Vector3 CoordToWorldPoint(Tile tile, int depth) {
+        return new Vector3 (-width / 2 + .5f + tile.X, depth, -height / 2 + .5f + tile.Y);
+    }
+
+    void InitializeMap(Room mainCavern){
+        Tile player = mainCavern.tiles[randNumGen.Next(0,mainCavern.tiles.Count-1)], exitPoint = mainCavern.tiles[randNumGen.Next(0,mainCavern.tiles.Count-1)];
+        double tolerance = .80 * mainCavern.tiles.Count, enemyTolerance = .25 * mainCavern.tiles.Count;
+        int wall_height = -1 * meshGen.WallHeight();
+
+        playerObject.transform.position = CoordToWorldPoint(player, wall_height);
+        playerObject.SetActive(true);
+        lightObject.SetActive(true);
+        cameraObject.SetActive(true);
+        cameraObject.GetComponent<CameraController>().Initialize();
+
+        double coordAbs(Tile A, Tile B){
+            return Math.Sqrt(Mathf.Pow(A.X+B.X,2)+Mathf.Pow(A.Y+B.Y,2));
+        }
+
+    }
+
+    struct Tile {
+        public int X, Y;
+
+        public Tile(int x_coord, int y_coord){
+            X = x_coord;
+            Y = y_coord;
+        }
+    }
+
+    class Room : IComparable<Room> {
+        public List<Tile> tiles, edgeTiles;
+        public List<Room> connectedRooms;
+        public int size;
+        public bool accessible, mainRoom;
+
+        public Room(){
+        }
+
+        public Room(List<Tile> roomTiles, int[,] map){
+            tiles = roomTiles;
+            size = tiles.Count;
+            connectedRooms = new List<Room>();
+            edgeTiles = new List<Tile>();
+
+            foreach (Tile tile in tiles){
+                for (int x=tile.X-1; x<=tile.X+1; x++){
+                    for (int y=tile.Y-1; y<=tile.Y+1; y++){
+                        if ((x == tile.X || y == tile.Y) && map[x,y] == 1){
+                            edgeTiles.Add(tile);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetAccessible(){
+            if (!accessible){
+                accessible = true;
+                foreach (Room connected in connectedRooms){
+                    connected.SetAccessible();
+                }
+            }
+        }
+
+        public static void Connect(Room A, Room B){
+            if (A.accessible){
+                B.SetAccessible();
+            }
+            else if (B.accessible){
+                A.SetAccessible();
+            }
+
+            A.connectedRooms.Add(B);
+            B.connectedRooms.Add(A);
+        }
+
+        public bool IsConnected(Room other){
+            return connectedRooms.Contains(other);
+        }
+
+        public int CompareTo(Room other) {
+            return other.size.CompareTo(size);
+        }
+    }
+
+/* 
     void OnDrawGizmos() {
         if (floorMap != null) {
             for (int x = 0; x < width; x ++) {
@@ -161,4 +414,5 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+    */
 }
