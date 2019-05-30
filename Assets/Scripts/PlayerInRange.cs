@@ -21,14 +21,13 @@ public class PlayerInRange : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
     	if (other.CompareTag("Player")) {
-    		animator.SetBool("attacking", true);
+    		animator.SetBool("enemyAttacking", true);
     	}
     }
 
     private void OnTriggerExit(Collider other) {
-        Debug.Log("here");
         if (other.CompareTag("Player")) {
-            animator.SetBool("attacking", false);
+            animator.SetBool("enemyAttacking", false);
         }
     }
 }
