@@ -77,7 +77,7 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator deathCo() {
         yield return new WaitForSeconds(1.5f);
-        gameManagerObject.GetComponent<GameManager>().EnemyDeath();
+        gameManagerObject.GetComponent<GameManager>().EnemyDeath(this.transform.position);
         this.gameObject.SetActive(false);
         Destroy(this.gameObject);
     }

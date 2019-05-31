@@ -229,7 +229,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapGeneratorObject: {fileID: 1726316852}
-  startingEnemyCount: 1
+  startingEnemyCount: 3
+  dungeonLevel: 1
 --- !u!1001 &793749509
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -492,6 +493,21 @@ PrefabInstance:
         type: 3}
       propertyPath: numEnemies
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896514253402321867, guid: 061cf91fc09c842308ed79d0519264f0,
+        type: 3}
+      propertyPath: fillPercentage
+      value: 42
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896514253402321867, guid: 061cf91fc09c842308ed79d0519264f0,
+        type: 3}
+      propertyPath: width
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896514253402321867, guid: 061cf91fc09c842308ed79d0519264f0,
+        type: 3}
+      propertyPath: height
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1896514253402321869, guid: 061cf91fc09c842308ed79d0519264f0,
         type: 3}
