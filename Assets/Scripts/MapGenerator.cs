@@ -19,10 +19,10 @@ public class MapGenerator : MonoBehaviour
     private MeshGenerator meshGen;
     private NavMeshSurface navMeshSurface;
 
-    public void BuildMap(int enemyType){
+    public void BuildMap(int enemyType, int multiplier){
         navMeshSurface = GetComponentInChildren<NavMeshSurface>();
         ClearMap();
-        GenMap(enemyType);
+        GenMap(enemyType, multiplier);
         navMeshSurface.BuildNavMesh();
     }
 
@@ -33,7 +33,7 @@ public class MapGenerator : MonoBehaviour
         
     }
 
-    void GenMap(int enemyType){
+    void GenMap(int enemyType, int multiplier){
         floorMap = new int[width, height];
         RenderMap();
         for (int i=0; i<smoothingIterations; i++){
@@ -42,7 +42,7 @@ public class MapGenerator : MonoBehaviour
 
         meshGen = GetComponent<MeshGenerator>();
         meshGen.CreatePlane(width+borderSize*2,height+borderSize*2);
-        removeCaverns(enemyType);
+        removeCaverns(enemyType, multiplier);
 
         int[,] borderedMap = new int[width+borderSize*2, height+borderSize*2];
 
@@ -110,7 +110,7 @@ public class MapGenerator : MonoBehaviour
         return wallCount;
     }
 
-    void removeCaverns(int enemyType){
+    void removeCaverns(int enemyType, int multiplier){
         bool[,] visited = new bool[width,height];
         Dictionary<(int,int), int> caverns = new Dictionary<(int,int), int>();
         List<Room> cavernRooms = new List<Room>();
@@ -147,7 +147,7 @@ public class MapGenerator : MonoBehaviour
 
         ConnectCaverns(cavernRooms);
 
-        InitializeMap(cavernRooms, cavernRooms[randNumGen.Next(0,cavernRooms.Count)], enemyType);
+        InitializeMap(cavernRooms, cavernRooms[randNumGen.Next(0,cavernRooms.Count)], enemyType, multiplier);
 
         void exploreNeighbors(int x, int y, Queue<(int,int)> neighbors){
             if (x>0 && x<width-1 && y>0 && y<height-1){
@@ -350,7 +350,7 @@ public class MapGenerator : MonoBehaviour
         return new Vector3 (-width / 2 + .5f + tile.X, depth, -height / 2 + .5f + tile.Y);
     }
 
-    void InitializeMap(List<Room> caverns, Room mainCavern, int enemyType){
+    void InitializeMap(List<Room> caverns, Room mainCavern, int enemyType, int multiplier){
         Tile player = mainCavern.tiles[randNumGen.Next(0,mainCavern.tiles.Count-1)], exitPoint = mainCavern.tiles[randNumGen.Next(0,mainCavern.tiles.Count-1)];
         double tolerance = .80 * mainCavern.tiles.Count, enemyTolerance = .25 * mainCavern.tiles.Count;
         int wall_height = -1 * meshGen.WallHeight();
@@ -376,6 +376,7 @@ public class MapGenerator : MonoBehaviour
             enemyLoc.y += 0.5f;
             enemy.transform.position = enemyLoc;
             enemy.GetComponent<EnemyController>().target = playerObject;
+            enemy.GetComponent<EnemyController>().LevelUp(multiplier);
             enemy.SetActive(true);
             DrawSpawnCircle(player, spawnLocs, 2);
         }

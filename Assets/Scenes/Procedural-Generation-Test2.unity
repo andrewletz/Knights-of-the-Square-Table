@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bacc080040284bd7992422c5a61504b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 4
   currentState: 0
   maxPlayerHealth: 100
 --- !u!1 &674198486 stripped
@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapGeneratorObject: {fileID: 1726316852}
-  startingEnemyCount: 3
+  startingEnemyCount: 5
   dungeonLevel: 1
 --- !u!1001 &793749509
 PrefabInstance:
@@ -513,6 +513,11 @@ PrefabInstance:
         type: 3}
       propertyPath: wallHeight
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896514253402321870, guid: 061cf91fc09c842308ed79d0519264f0,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 061cf91fc09c842308ed79d0519264f0, type: 3}

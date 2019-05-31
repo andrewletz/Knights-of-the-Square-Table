@@ -9,7 +9,7 @@ public class EnemyController : MonoBehaviour
     public GameObject target;
     public float stopDistance = 1.0f;
     public int maxEnemyHealth = 100;
-
+    public int healthLevelUp;
 
     private GameObject gameManagerObject;
     private int enemyHealth;
@@ -28,11 +28,6 @@ public class EnemyController : MonoBehaviour
 
         healthBar = this.transform.Find("Bar");
         enemyHealth = maxEnemyHealth;
-
-        // Remove this and only detect player collisions
-        // this.gameObject.GetComponent<Rigidbody>().detectCollisions = false;
-
-           
     }
 
     void Update() {
@@ -53,8 +48,12 @@ public class EnemyController : MonoBehaviour
             anim.SetBool("enemyMoving", false);
             anim.SetBool("enemyAttacking", false);
         }
+    }
 
-
+    public void LevelUp(int multiplier){
+        maxEnemyHealth += (multiplier * healthLevelUp);
+        enemyHealth = maxEnemyHealth;
+        Debug.Log(enemyHealth);
     }
 
     public void Death() {
