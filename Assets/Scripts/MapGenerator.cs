@@ -370,7 +370,8 @@ public class MapGenerator : MonoBehaviour
                 break;
             }
 
-            GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy" + enemyType + ".prefab", typeof(GameObject))) as GameObject;
+            //GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy" + enemyType + ".prefab", typeof(GameObject))) as GameObject;
+            GameObject enemy = GameObject.Instantiate(Resources.Load("Prefabs/Enemies/Enemy" + enemyType) as GameObject);
             Vector3 enemyLoc = CoordToWorldPoint(spawnLocs[randNumGen.Next(0,spawnLocs.Count-1)], wall_height);
             enemyLoc.y += 0.5f;
             enemy.transform.position = enemyLoc;

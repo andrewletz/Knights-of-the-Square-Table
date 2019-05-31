@@ -50,7 +50,8 @@ public class GameManager : MonoBehaviour
 
     // Spawn a portal to teleport to next wave / dungeon
     void SpawnPortal(Vector3 pos){
-        GameObject portal = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Portal.prefab", typeof(GameObject))) as GameObject;
+        //GameObject portal = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Portal.prefab", typeof(GameObject))) as GameObject;
+        GameObject portal = GameObject.Instantiate(Resources.Load("Prefabs/Portal") as GameObject);
         portal.transform.position = pos;
     }
 

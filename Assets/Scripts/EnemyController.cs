@@ -54,7 +54,6 @@ public class EnemyController : MonoBehaviour
     public void LevelUp(int multiplier){
         maxEnemyHealth += (multiplier * healthLevelUp);
         enemyHealth = maxEnemyHealth;
-        Debug.Log(enemyHealth);
     }
 
     public void Death() {
