@@ -23,6 +23,7 @@ public class EnemyController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.stoppingDistance = stopDistance;
         anim = GetComponentInChildren<Animator>();
+        anim.SetBool("enemyAttacking", false);
 
         gameManagerObject = GameObject.Find("GameManager");
 

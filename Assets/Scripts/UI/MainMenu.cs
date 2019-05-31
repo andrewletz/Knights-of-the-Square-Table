@@ -8,6 +8,8 @@ public class MainMenu : MonoBehaviour
     public AudioSource source;
     public AudioClip song;
 
+    public GameObject gameManagerObject;
+
     public Texture2D cursorTexture;
 
     public Texture2D crosshairTexture;
@@ -18,6 +20,8 @@ public class MainMenu : MonoBehaviour
         source.loop = true;
         source.Play();
 
+        gameManagerObject = GameObject.Find("GameManager");
+
         Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
     }
 
@@ -25,7 +29,7 @@ public class MainMenu : MonoBehaviour
     {
         source.Stop();
 
-        Cursor.SetCursor(crosshairTexture, Vector2.zero, CursorMode.Auto);
+        // Cursor.SetCursor(crosshairTexture, Vector2.zero, CursorMode.Auto);
 
         SceneManager.LoadScene("Procedural-Generation-Test2");
     }
@@ -33,5 +37,10 @@ public class MainMenu : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void ContinueGame()
+    {
+        gameManagerObject.GetComponent<GameManager>().ContinueGame();
     }
 }

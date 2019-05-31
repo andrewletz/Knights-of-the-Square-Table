@@ -94,6 +94,8 @@ public class PlayerController : MonoBehaviour {
 	}
 
     public void Death() {
+    	GameObject gameManager = GameObject.Find("GameManager");
+    	gameManager.GetComponent<GameManager>().RestartGame();
     	this.gameObject.SetActive(false);
     }
 
@@ -102,8 +104,9 @@ public class PlayerController : MonoBehaviour {
         float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
         healthBar.localScale = new Vector3(healthPct, 1);
         
-        if (healthPct == 0.0f)
+        if (healthPct == 0.0f){
             Death();
+        }
     }
 
 	// private IEnumerator AttackCo() {

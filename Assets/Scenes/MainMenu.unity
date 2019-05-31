@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 160042402}
   - component: {fileID: 160042401}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Start Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -440,7 +440,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1199100719}
-        m_MethodName: LoadMain
+        m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -666,6 +666,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   source: {fileID: 1199100720}
   song: {fileID: 8300000, guid: d6a8764ec5b256f4cb006c04ab13b68e, type: 3}
+  gameManagerObject: {fileID: 0}
   cursorTexture: {fileID: 2800000, guid: 04effa08ddfa46643b9d540efbd6edc2, type: 3}
   crosshairTexture: {fileID: 2800000, guid: c47d03916d9e2bc479d0e4f5d5356985, type: 3}
 --- !u!82 &1199100720

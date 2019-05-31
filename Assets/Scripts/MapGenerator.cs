@@ -364,8 +364,7 @@ public class MapGenerator : MonoBehaviour
         {
             spawnLocs.AddRange(cavern.tiles);
         }
-        // DrawSpawnCircle(player, spawnLocs, 5);
-        Debug.Log(spawnLocs.Count);
+        DrawSpawnCircle(player, spawnLocs, 5);
         for (int i=0; i<numEnemies; i++){
             if (spawnLocs.Count < 1){
                 break;

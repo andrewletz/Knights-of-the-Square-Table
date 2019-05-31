@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -8,16 +10,33 @@ public class GameManager : MonoBehaviour
 	public int startingEnemyCount;
     public int dungeonLevel = 1;
 
+    public GameObject pauseScreen;
+
 
 	private int currentEnemyCount;
     private int levelMultiplier = 0;
     private int enemyType = 1;
-    
+
+    private bool gamePaused = false;
 
     void Start()
     {
     	currentEnemyCount = startingEnemyCount;
         BuildLevel("dungeon" + dungeonLevel);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown("p")){
+            if (gamePaused){
+                ContinueGame();
+                pauseScreen.SetActive(false);
+            }
+            else{
+                PauseGame();
+                pauseScreen.SetActive(true);
+            }
+        }
     }
 
     // Generate new map with seed
@@ -47,6 +66,27 @@ public class GameManager : MonoBehaviour
         currentEnemyCount = startingEnemyCount;
         dungeonLevel += 1;
         enemyType += 1;
+    }
+
+    IEnumerator pauseThenRestart(){
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void RestartGame(){
+        StartCoroutine(pauseThenRestart());
+    }
+
+
+
+    public void PauseGame(){
+        gamePaused = true;
+        Time.timeScale = 0;
+    }
+
+    public void ContinueGame(){
+        gamePaused = false;
+        Time.timeScale = 1;
     }
 
     // Called by the portal to begin next level
