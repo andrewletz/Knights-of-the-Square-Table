@@ -42,7 +42,7 @@ public class MapGenerator : MonoBehaviour
 
         meshGen = GetComponent<MeshGenerator>();
         meshGen.CreatePlane(width+borderSize*2,height+borderSize*2);
-        removeCaverns();
+        Room exitCavern = removeCaverns();
 
         int[,] borderedMap = new int[width+borderSize*2, height+borderSize*2];
 
@@ -56,6 +56,9 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+
+        CreateExit(exitCavern, borderedMap);
+
         meshGen.GenerateMesh(borderedMap, 1);
     }
 
@@ -110,7 +113,7 @@ public class MapGenerator : MonoBehaviour
         return wallCount;
     }
 
-    void removeCaverns(){
+    Room removeCaverns(){
         bool[,] visited = new bool[width,height];
         Dictionary<(int,int), int> caverns = new Dictionary<(int,int), int>();
         List<Room> cavernRooms = new List<Room>();
@@ -188,6 +191,8 @@ public class MapGenerator : MonoBehaviour
                 floorMap[tile.X, tile.Y] = 1;
             }
         }
+
+        return cavernRooms[randNumGen.Next(0,cavernRooms.Count)];
     }
 
     void ConnectCaverns(List<Room> caverns, bool forceAccessibility=false){
@@ -269,17 +274,41 @@ public class MapGenerator : MonoBehaviour
 
         List<Tile> line = GetLine(A_tile, B_tile);
         foreach (Tile t in line){
-            DrawCircle(t,5);
+            DrawCircle(t,5,floorMap);
         }
     }
 
-    void DrawCircle(Tile t, int rad){
+    void CreateExitPath(Tile A_tile, Tile B_tile, int[,] map){
+        List<Tile> line = GetLine(A_tile, B_tile);
+        foreach (Tile t in line){
+            DrawCircle(t,5,map);
+        }
+    }
+
+    void CreateExit(Room room, int[,] map){
+        Tile exitPoint = room.edgeTiles[randNumGen.Next(0,room.edgeTiles.Count)];
+        int m_width = map.GetLength(0), m_height = map.GetLength(1), left = exitPoint.X, right = m_width-left, bottom = exitPoint.Y, top = m_height-bottom, exitPos = Math.Min(Math.Min(left,right), Math.Min(bottom,top));
+        if (exitPos == left){
+            CreateExitPath(exitPoint, new Tile(0,exitPoint.Y),map);
+        }
+        else if (exitPos == right){
+            CreateExitPath(exitPoint, new Tile(m_width,exitPoint.Y),map);
+        }
+        else if (exitPos == bottom){
+            CreateExitPath(exitPoint, new Tile(exitPoint.X,0),map);
+        }
+        else if (exitPos == top){
+            CreateExitPath(exitPoint, new Tile(exitPoint.X,m_height),map);
+        }
+    }
+
+    void DrawCircle(Tile t, int rad, int[,] map){
         for (int x = -rad; x <= rad; x++){
             for (int y = -rad; y <= rad; y++){
                 if (x*x + y*y <= rad*rad){
                     int realX = t.X+x, realY = t.Y+y;
-                    if (IsInMapRange(realX,realY)){
-                        floorMap[realX,realY] = 0;
+                    if (IsInMapRange(realX,realY, map)){
+                        map[realX,realY] = 0;
                     }
                 }
             }
@@ -291,7 +320,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = -rad; y <= rad; y++){
                 if (x*x + y*y <= rad*rad){
                     int realX = t.X+x, realY = t.Y+y;
-                    if (IsInMapRange(realX,realY)){
+                    if (IsInMapRange(realX,realY, floorMap)){
                         floorMap[realX,realY] = 0;
                         for (int i=0; i<tiles.Count; i++){
                             if (tiles[i].X == realX && tiles[i].Y == realY){
@@ -304,8 +333,8 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    bool IsInMapRange(int x, int y){
-        return x >= 0 && x < width && y >= 0 && y < height;
+    bool IsInMapRange(int x, int y, int[,] map){
+        return x >= 0 && x < map.GetLength(0) && y >= 0 && y < map.GetLength(1);
     }
 
     List<Tile> GetLine(Tile from, Tile to){
@@ -366,7 +395,7 @@ public class MapGenerator : MonoBehaviour
                 break;
             }
 
-            GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy5.prefab", typeof(GameObject))) as GameObject;
+            GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy4.prefab", typeof(GameObject))) as GameObject;
             Vector3 enemyLoc = CoordToWorldPoint(spawnLocs[randNumGen.Next(0,spawnLocs.Count-1)], wall_height);
             enemyLoc.y += 0.5f;
             enemy.transform.position = enemyLoc;
