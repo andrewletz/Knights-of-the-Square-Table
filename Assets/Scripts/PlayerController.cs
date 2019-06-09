@@ -109,6 +109,14 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public void Heal(int healAmount) {
+    	playerHealth += healAmount;
+    	playerHealth = Mathf.Min(playerHealth, 100);
+
+    	float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
+    	healthBar.localScale = new Vector3(healthPct, 1);
+    }
+
 	// private IEnumerator AttackCo() {
 	// 	animator.SetBool("attacking", true);
 	// 	currentState = PlayerState.attack;

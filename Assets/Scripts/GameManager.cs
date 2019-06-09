@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class GameManager : MonoBehaviour
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
     public int dungeonLevel = 1;
 
     public GameObject pauseScreen;
+    public GameObject HUD;
 
 
 	private int currentEnemyCount;
@@ -19,23 +21,63 @@ public class GameManager : MonoBehaviour
 
     private bool gamePaused = false;
 
+    private int currentSpell = 0;
+    private GameObject fireSpellBackground;
+    private GameObject magnetSpellBackground;
+
     void Start()
     {
+        fireSpellBackground = GameObject.Find("FireSpellBackground");
+        magnetSpellBackground = GameObject.Find("MagnetSpellBackground");
+
     	currentEnemyCount = startingEnemyCount;
         BuildLevel("dungeon" + dungeonLevel);
     }
 
     void Update()
     {
+        if (Input.GetKeyDown("q")){
+            if (currentSpell == 1){
+                currentSpell = 0;
+                swapSpellIcon();
+            }
+        }
+
+        if (Input.GetKeyDown("e")){
+            if (currentSpell == 0){
+                currentSpell = 1;
+                swapSpellIcon();
+            }
+        }
+
+
         if (Input.GetKeyDown("p")){
             if (gamePaused){
                 ContinueGame();
                 pauseScreen.SetActive(false);
+                HUD.SetActive(true);
             }
             else{
                 PauseGame();
                 pauseScreen.SetActive(true);
+                HUD.SetActive(false);
             }
+        }
+    }
+
+    // Swap the background highlight for the spell
+    void swapSpellIcon(){
+
+        if (currentSpell == 1){
+            Color c = fireSpellBackground.GetComponent<Image>().color;
+            magnetSpellBackground.GetComponent<Image>().color = c;
+            c.a = 0.0f;
+            fireSpellBackground.GetComponent<Image>().color = c;
+        } else {
+            Color c = magnetSpellBackground.GetComponent<Image>().color;
+            fireSpellBackground.GetComponent<Image>().color = c;
+            c.a = 0.0f;
+            magnetSpellBackground.GetComponent<Image>().color = c;
         }
     }
 
@@ -49,17 +91,22 @@ public class GameManager : MonoBehaviour
     }
 
     // Spawn a portal to teleport to next wave / dungeon
-    void SpawnPortal(Vector3 pos){
+    void SpawnPortal(Vector3 pos) {
         //GameObject portal = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Portal.prefab", typeof(GameObject))) as GameObject;
         GameObject portal = GameObject.Instantiate(Resources.Load("Prefabs/Portal") as GameObject);
         portal.transform.position = pos;
+    }
+
+    void SpawnHeart(Vector3 pos) {
+        GameObject heart = GameObject.Instantiate(Resources.Load("Prefabs/HeartDrop") as GameObject);
+        heart.transform.position = pos;
     }
 
     // Scale up enemy health
     void IncreaseDifficulty(){
         startingEnemyCount += 2;
         levelMultiplier += 1;
-        enemyType = 1;
+        enemyType = 0;
     }
 
     // Increments counts for the next wave / dungeon
@@ -93,6 +140,7 @@ public class GameManager : MonoBehaviour
     // Called by the portal to begin next level
     public void NextLevel(){
         BuildLevel("dungeon" + dungeonLevel);
+        HUD.GetComponentInChildren<Text>().text = "Dungeon Level: " + dungeonLevel;
     }
 
     // Called by EnemyController to keep track of alive enemies
@@ -100,12 +148,17 @@ public class GameManager : MonoBehaviour
     {
     	currentEnemyCount -= 1;
     	if (currentEnemyCount == 0){
-            NextWave();
-            if (enemyType == 6){
+            if (enemyType == 5){
                 IncreaseDifficulty();
             }
             SpawnPortal(EnemyPos);
-    	}
+            NextWave();
+    	} 
+        else {
+            if(Random.value > 0.0){
+                SpawnHeart(EnemyPos);
+            }
+        }
     }
 
 

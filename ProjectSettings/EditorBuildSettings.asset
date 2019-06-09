@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 7d966db0952754d4cb0198fb595aa797
   - enabled: 1
-    path: Assets/Scenes/Procedural-Generation-Test2.unity
+    path: Assets/Scenes/UI and Health.unity
     guid: 35da5fc81c0bd4950aed14c91c9cc916
   m_configObjects: {}
