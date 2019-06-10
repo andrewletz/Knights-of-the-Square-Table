@@ -368,8 +368,8 @@ public class MapGenerator : MonoBehaviour
 
         bool bossRound = dungeonLevel % 3 == 0;
         int enemyNum = ((dungeonLevel - 1) % 5) + 1;
-        int randomEnemyNum = (int) UnityEngine.Random.Range(0.0f, 5.99f);
-        int randomEnemyNum2 = (int) UnityEngine.Random.Range(0.0f, 5.99f);
+        int randomEnemyNum = (int) UnityEngine.Random.Range(1.0f, 5.9f);
+        int randomEnemyNum2 = (int) UnityEngine.Random.Range(1.0f, 5.9f);
         int numToSpawn = numEnemies;
 
         if (bossRound) numToSpawn = (int)dungeonLevel / 3;
