@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OrbController : MonoBehaviour
 {
-    public GameObject FlamePillar;
+    public GameObject currentSpell;
 
     private GameObject orbRenderer;
 
@@ -40,7 +40,7 @@ public class OrbController : MonoBehaviour
         StartCoroutine(Spell(clickPos, 0.5f));
     }
 
-    // travels to clickPos over travelTime (in seconds) and casts flame pillar
+    // travels to clickPos over travelTime (in seconds) and casts currentSpell
     IEnumerator Spell(Vector3 clickPos, float travelTime)
     {
         Vector3 startPosition = transform.position;
@@ -70,7 +70,7 @@ public class OrbController : MonoBehaviour
 
             // spawn the spell
             yield return null;
-            Instantiate(FlamePillar, clickPos, Quaternion.Euler(new Vector3(45, 0, 0)));
+            Instantiate(currentSpell, clickPos, Quaternion.Euler(new Vector3(45, 0, 0)));
 
             // travel back to the weapon sprite
             startTime = Time.time;

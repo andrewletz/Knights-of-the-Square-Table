@@ -10,10 +10,9 @@ public class PlayerController : MonoBehaviour {
 		interact
 	}
 
-	public float speed = 10.0f;
-	public PlayerState currentState;
+    public PlayerState currentState;
+    public float speed = 10.0f;
 	public int maxPlayerHealth = 100;
-
 
 	private int playerHealth;
 	private Rigidbody rigidBody;
@@ -41,9 +40,6 @@ public class PlayerController : MonoBehaviour {
 	void FixedUpdate() {
         Vector3 mousePos = Input.mousePosition;
         if (Input.GetButtonDown("attack") && currentState != PlayerState.attack) {
-            //StartCoroutine(AttackCo());
-            //weapon.SendMessage("StartAttackAnimation");
-
             // cast ray down from mouse position to find where the mouse is on the floor
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -51,7 +47,6 @@ public class PlayerController : MonoBehaviour {
             // won't be true if the normal isn't 1 (flat surface)
             if (Physics.Raycast(ray, out hit))
             {
-
                 Vector3 target = hit.point;
 
                 // bump the position of the mouse so the flame pillar comes out at the right spot
@@ -104,7 +99,7 @@ public class PlayerController : MonoBehaviour {
         float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
         healthBar.localScale = new Vector3(healthPct, 1);
         
-        if (healthPct == 0.0f){
+        if (playerHealth <= 0){
             Death();
         }
     }
@@ -113,7 +108,7 @@ public class PlayerController : MonoBehaviour {
     	playerHealth += healAmount;
     	playerHealth = Mathf.Min(playerHealth, 100);
 
-    	float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
+     	float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
     	healthBar.localScale = new Vector3(healthPct, 1);
     }
 

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5612570349119262679}
   - component: {fileID: 2019578897402481392}
-  - component: {fileID: 785843748416330039}
+  - component: {fileID: 3203596273898492033}
   m_Layer: 0
   m_Name: spell hit box
   m_TagString: Untagged
@@ -43,9 +43,9 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 1, z: 1.9018588}
-  m_Center: {x: 0, y: 0, z: -0.3240261}
---- !u!114 &785843748416330039
+  m_Size: {x: 6, y: 1, z: 6.5}
+  m_Center: {x: 0, y: 0, z: -0.2}
+--- !u!114 &3203596273898492033
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -54,7 +54,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1359335873456625809}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 519d7e4c9754047cb8676cae0805a6bd, type: 3}
+  m_Script: {fileID: 11500000, guid: a4c929044376d574ca6ce1e833b300f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2466290386555291966
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 2466290386555291965}
   - component: {fileID: 4662812807253360209}
   m_Layer: 0
-  m_Name: FlamePillar
+  m_Name: Implosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,7 +128,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7bb8dc7e4d33b1842b44265fb6463f6e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8725cfb65abc4294386a62843a634476, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -149,7 +149,7 @@ Animator:
   m_GameObject: {fileID: 2466290386555291966}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 346bd7af73ac13f469086174c9c972f0, type: 2}
+  m_Controller: {fileID: 9100000, guid: ce33ee86290be624aa87edc6f2ab2328, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

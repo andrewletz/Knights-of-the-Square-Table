@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.3587269, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -410,8 +410,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bacc080040284bd7992422c5a61504b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
   currentState: 0
+  speed: 4
   maxPlayerHealth: 100
 --- !u!1 &449477309
 GameObject:
@@ -572,7 +572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapGeneratorObject: {fileID: 1726316852}
-  startingEnemyCount: 1
+  startingEnemyCount: 15
   dungeonLevel: 1
   pauseScreen: {fileID: 640900421}
   HUD: {fileID: 909857373}
@@ -668,6 +668,18 @@ PrefabInstance:
       propertyPath: m_Size.z
       value: 1.1
       objectReference: {fileID: 0}
+    - target: {fileID: 7023889790221624088, guid: d438edb10edeb49a88d9b53ad1cce891,
+        type: 3}
+      propertyPath: FlamePillar
+      value: 
+      objectReference: {fileID: 2466290386555291966, guid: a91bc7f59d13dba48b32b196ae7e0ef0,
+        type: 3}
+    - target: {fileID: 7023889790221624088, guid: d438edb10edeb49a88d9b53ad1cce891,
+        type: 3}
+      propertyPath: currentSpell
+      value: 
+      objectReference: {fileID: 2466290386555291966, guid: 3c27db21e80646e4c9f4e73feacb6600,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d438edb10edeb49a88d9b53ad1cce891, type: 3}
 --- !u!1 &909857373 stripped
