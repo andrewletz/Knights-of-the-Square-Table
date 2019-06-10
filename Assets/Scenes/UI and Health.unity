@@ -533,6 +533,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 449477309}
   m_CullTransparentMesh: 0
+--- !u!1 &559939639 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7023889790221624070, guid: d438edb10edeb49a88d9b53ad1cce891,
+    type: 3}
+  m_PrefabInstance: {fileID: 793749509}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &640900421 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4504198802282875953, guid: deaad7cf580804c919ccbae221b04b73,
@@ -703,6 +709,7 @@ MonoBehaviour:
   dungeonLevel: 1
   pauseScreen: {fileID: 640900421}
   HUD: {fileID: 909857373}
+  orbController: {fileID: 559939639}
 --- !u!1001 &793749509
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -799,13 +806,19 @@ PrefabInstance:
         type: 3}
       propertyPath: FlamePillar
       value: 
-      objectReference: {fileID: 2466290386555291966, guid: a91bc7f59d13dba48b32b196ae7e0ef0,
+      objectReference: {fileID: 2466290386555291966, guid: 3c27db21e80646e4c9f4e73feacb6600,
         type: 3}
     - target: {fileID: 7023889790221624088, guid: d438edb10edeb49a88d9b53ad1cce891,
         type: 3}
       propertyPath: currentSpell
       value: 
       objectReference: {fileID: 2466290386555291966, guid: 3c27db21e80646e4c9f4e73feacb6600,
+        type: 3}
+    - target: {fileID: 7023889790221624088, guid: d438edb10edeb49a88d9b53ad1cce891,
+        type: 3}
+      propertyPath: Implosion
+      value: 
+      objectReference: {fileID: 2466290386555291966, guid: a91bc7f59d13dba48b32b196ae7e0ef0,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d438edb10edeb49a88d9b53ad1cce891, type: 3}

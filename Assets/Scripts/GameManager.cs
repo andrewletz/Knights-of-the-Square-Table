@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject pauseScreen;
     public GameObject HUD;
 
+    public GameObject orbController;
+
     private int killCount = 0;
 	private int currentEnemyCount;
     private int levelMultiplier = 0;
@@ -21,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     private bool gamePaused = false;
 
-    private int currentSpell = 0;
+    private int currentSpell = 0; // 0 flame pillar, 1 implosion
     private GameObject fireSpellBackground;
     private GameObject magnetSpellBackground;
 
@@ -38,15 +40,17 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown("q")){
-            if (currentSpell == 1){
+            if (currentSpell == 1) {
                 currentSpell = 0;
+                orbController.SendMessage("SetSpell", "FlamePillar");
                 swapSpellIcon();
             }
         }
 
         if (Input.GetKeyDown("e")){
-            if (currentSpell == 0){
+            if (currentSpell == 0) {
                 currentSpell = 1;
+                orbController.SendMessage("SetSpell", "Implosion");
                 swapSpellIcon();
             }
         }
@@ -158,7 +162,7 @@ public class GameManager : MonoBehaviour
     {
         killCount += 1;
         HUD.transform.GetChild(1).GetComponent<Text>().text = "Kills:" + killCount;
-        Debug.Log(HUD.transform.GetChild(1).GetComponent<Text>().text);
+
         currentEnemyCount -= 1;
     	if (currentEnemyCount == 0){
             if (enemyType == 5){

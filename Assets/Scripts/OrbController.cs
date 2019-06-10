@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class OrbController : MonoBehaviour
 {
-    public GameObject currentSpell;
+    public GameObject FlamePillar;
+    public GameObject Implosion;
+
+    private GameObject currentSpell;
 
     private GameObject orbRenderer;
 
@@ -19,6 +22,7 @@ public class OrbController : MonoBehaviour
 
     void Start()
     {
+        currentSpell = FlamePillar;
         orbRenderer = transform.GetChild(0).transform.gameObject;
     }
 
@@ -32,6 +36,18 @@ public class OrbController : MonoBehaviour
             angle += rotateSpeed * Time.deltaTime;
             Vector3 offset = new Vector3(Mathf.Cos(angle), height, Mathf.Sin(angle)) * radius;
             transform.position = Vector3.Lerp(transform.position, weaponSpritePosition + offset, rotateSpeed * Time.deltaTime);
+        }
+    }
+
+    void SetSpell(string spellName)
+    {
+        if (spellName == "FlamePillar")
+        {
+            currentSpell = FlamePillar;
+        }
+        else
+        {
+            currentSpell = Implosion;
         }
     }
 
