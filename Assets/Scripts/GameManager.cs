@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour
     // Scale up enemy health
     void IncreaseDifficulty(){
         startingEnemyCount += 3;
-        levelMultiplier += 0.2f;
+        levelMultiplier += 0.5f;
         enemyType = 0;
     }
 
