@@ -51,8 +51,8 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public void LevelUp(int multiplier){
-        maxEnemyHealth += (multiplier * healthLevelUp);
+    public void LevelUp(float multiplier){
+        maxEnemyHealth += (int) (multiplier * healthLevelUp);
         enemyHealth = maxEnemyHealth;
     }
 

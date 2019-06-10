@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     private int killCount = 0;
 	private int currentEnemyCount;
-    private int levelMultiplier = 0;
+    private float levelMultiplier = 1;
     private int enemyType = 1;
     private int[] enemyTypes = { 1, 2, 3, 4, 5 };
 
@@ -29,16 +29,18 @@ public class GameManager : MonoBehaviour
     private GameObject magnetSpellBackground;
 
     private GameObject splashText;
+    private GameObject enemiesLeftText;
 
     void Start()
     {
         fireSpellBackground = GameObject.Find("FireSpellBackground");
         magnetSpellBackground = GameObject.Find("MagnetSpellBackground");
         splashText = GameObject.Find("DungeonLevelSplash");
+        enemiesLeftText = GameObject.Find("EnemiesLeftSplash");
+        
         swapSpellIcon();
-
     	currentEnemyCount = startingEnemyCount;
-        BuildLevel("dungeon" + dungeonLevel);
+        BuildLevel("dungeon" + Random.Range(dungeonLevel, 500));
     }
 
     void Update()
@@ -105,7 +107,8 @@ public class GameManager : MonoBehaviour
     	MapGenerator mapGenerator = mapGeneratorObject.GetComponent<MapGenerator>();
         mapGenerator.numEnemies = startingEnemyCount;
         mapGenerator.randomSeed = seed;
-        mapGenerator.BuildMap(enemyType, levelMultiplier);	
+        mapGenerator.dungeonLevel = dungeonLevel;
+        mapGenerator.BuildMap(levelMultiplier);	
     }
 
     // Spawn a portal to teleport to next wave / dungeon
@@ -122,14 +125,21 @@ public class GameManager : MonoBehaviour
 
     // Scale up enemy health
     void IncreaseDifficulty(){
-        startingEnemyCount += 2;
-        levelMultiplier += 1;
+        startingEnemyCount += 3;
+        levelMultiplier += 0.2f;
         enemyType = 0;
     }
 
     // Increments counts for the next wave / dungeon
     void NextWave(){
-        currentEnemyCount = startingEnemyCount;
+        if ((dungeonLevel + 1) % 3 == 0)
+        {
+            currentEnemyCount = (int) (dungeonLevel + 1) / 3;
+        } else
+        {
+            currentEnemyCount = startingEnemyCount;
+        }
+
         dungeonLevel += 1;
         enemyType += 1;
     }
@@ -158,7 +168,7 @@ public class GameManager : MonoBehaviour
         BuildLevel("dungeon" + dungeonLevel);
         HUD.transform.GetChild(0).GetComponent<Text>().text = "Dungeon Level:" + dungeonLevel;
 
-        if (dungeonLevel % 5 == 0)
+        if (dungeonLevel % 3 == 0)
         {
             splashText.GetComponent<Text>().text = "BOSS LEVEL";
         } else
@@ -187,15 +197,22 @@ public class GameManager : MonoBehaviour
         HUD.transform.GetChild(1).GetComponent<Text>().text = "Kills:" + killCount;
 
         currentEnemyCount -= 1;
+        Debug.Log("    > Enemy count lowered to " +  currentEnemyCount);
     	if (currentEnemyCount == 0){
-            if (enemyType == 5){
+            if (dungeonLevel % 3 == 0){ // if its a boss level
                 IncreaseDifficulty();
             }
             SpawnPortal(EnemyPos);
             NextWave();
     	} 
         else {
-            if(Random.value > 0.0){
+            enemiesLeftText.GetComponent<Text>().text = currentEnemyCount + " enemies left";
+            StartCoroutine(FadeTextToZeroAlpha(2f, enemiesLeftText.GetComponent<Text>()));
+            if (dungeonLevel % 3 == 0)
+            {
+                SpawnHeart(EnemyPos);
+            }
+            else if(Random.value > 0.7f){
                 SpawnHeart(EnemyPos);
             }
         }

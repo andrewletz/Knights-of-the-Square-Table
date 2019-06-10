@@ -9,7 +9,7 @@ public class MapGenerator : MonoBehaviour
 {
     [Range(0,100)]
     public int fillPercentage;
-    public int width, height, smoothingIterations, borderSize, cavernThreshold, numEnemies;
+    public int width, height, smoothingIterations, borderSize, cavernThreshold, numEnemies, dungeonLevel;
     public string randomSeed;
     public bool useRandomSeed;
     public GameObject playerObject, cameraObject, lightObject;
@@ -19,10 +19,10 @@ public class MapGenerator : MonoBehaviour
     private MeshGenerator meshGen;
     private NavMeshSurface navMeshSurface;
 
-    public void BuildMap(int enemyType, int multiplier){
+    public void BuildMap(float multiplier){
         navMeshSurface = GetComponentInChildren<NavMeshSurface>();
         ClearMap();
-        GenMap(enemyType, multiplier);
+        GenMap(multiplier);
         navMeshSurface.BuildNavMesh();
     }
 
@@ -33,7 +33,7 @@ public class MapGenerator : MonoBehaviour
         
     }
 
-    void GenMap(int enemyType, int multiplier){
+    void GenMap(float multiplier){
         floorMap = new int[width, height];
         RenderMap();
         for (int i=0; i<smoothingIterations; i++){
@@ -42,7 +42,7 @@ public class MapGenerator : MonoBehaviour
 
         meshGen = GetComponent<MeshGenerator>();
         meshGen.CreatePlane(width+borderSize*2,height+borderSize*2);
-        removeCaverns(enemyType, multiplier);
+        removeCaverns(multiplier);
 
         int[,] borderedMap = new int[width+borderSize*2, height+borderSize*2];
 
@@ -110,7 +110,7 @@ public class MapGenerator : MonoBehaviour
         return wallCount;
     }
 
-    void removeCaverns(int enemyType, int multiplier){
+    void removeCaverns(float multiplier){
         bool[,] visited = new bool[width,height];
         Dictionary<(int,int), int> caverns = new Dictionary<(int,int), int>();
         List<Room> cavernRooms = new List<Room>();
@@ -147,7 +147,7 @@ public class MapGenerator : MonoBehaviour
 
         ConnectCaverns(cavernRooms);
 
-        InitializeMap(cavernRooms, cavernRooms[randNumGen.Next(0,cavernRooms.Count)], enemyType, multiplier);
+        InitializeMap(cavernRooms, cavernRooms[randNumGen.Next(0,cavernRooms.Count)], multiplier);
 
         void exploreNeighbors(int x, int y, Queue<(int,int)> neighbors){
             if (x>0 && x<width-1 && y>0 && y<height-1){
@@ -350,7 +350,7 @@ public class MapGenerator : MonoBehaviour
         return new Vector3 (-width / 2 + .5f + tile.X, depth, -height / 2 + .5f + tile.Y);
     }
 
-    void InitializeMap(List<Room> caverns, Room mainCavern, int enemyType, int multiplier){
+    void InitializeMap(List<Room> caverns, Room mainCavern, float multiplier){
         Tile player = mainCavern.tiles[randNumGen.Next(0,mainCavern.tiles.Count-1)], exitPoint = mainCavern.tiles[randNumGen.Next(0,mainCavern.tiles.Count-1)];
         double tolerance = .80 * mainCavern.tiles.Count, enemyTolerance = .25 * mainCavern.tiles.Count;
         int wall_height = -1 * meshGen.WallHeight();
@@ -365,13 +365,37 @@ public class MapGenerator : MonoBehaviour
             spawnLocs.AddRange(cavern.tiles);
         }
         DrawSpawnCircle(player, spawnLocs, 5);
-        for (int i=0; i<numEnemies; i++){
+
+        bool bossRound = dungeonLevel % 3 == 0;
+        int enemyNum = ((dungeonLevel - 1) % 5) + 1;
+        int randomEnemyNum = (int) UnityEngine.Random.Range(0.0f, 5.99f);
+        int randomEnemyNum2 = (int) UnityEngine.Random.Range(0.0f, 5.99f);
+        int numToSpawn = numEnemies;
+
+        if (bossRound) numToSpawn = (int)dungeonLevel / 3;
+        for (int i=0; i < numToSpawn; i++){
             if (spawnLocs.Count < 1){
                 break;
             }
 
-            //GameObject enemy = GameObject.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Enemies/Enemy" + enemyType + ".prefab", typeof(GameObject))) as GameObject;
-            GameObject enemy = GameObject.Instantiate(Resources.Load("Prefabs/Enemies/Enemy" + enemyType) as GameObject);
+            GameObject enemy;
+            if (bossRound)
+            {
+                enemy = GameObject.Instantiate(Resources.Load("Prefabs/Enemies/Boss1") as GameObject);
+            }
+            else if (UnityEngine.Random.value > 0.5f)
+            {
+                enemy = GameObject.Instantiate(Resources.Load("Prefabs/Enemies/Enemy" + enemyNum) as GameObject);
+            }
+            else if (UnityEngine.Random.value > 0.5f)
+            {
+                enemy = GameObject.Instantiate(Resources.Load("Prefabs/Enemies/Enemy" + randomEnemyNum) as GameObject);
+            }
+            else
+            {
+                enemy = GameObject.Instantiate(Resources.Load("Prefabs/Enemies/Enemy" + randomEnemyNum2) as GameObject);
+            }
+                
             Vector3 enemyLoc = CoordToWorldPoint(spawnLocs[randNumGen.Next(0,spawnLocs.Count-1)], wall_height);
             enemyLoc.y += 0.5f;
             enemy.transform.position = enemyLoc;

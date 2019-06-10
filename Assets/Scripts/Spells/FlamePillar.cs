@@ -8,10 +8,16 @@ public class FlamePillar : MonoBehaviour
     public AudioClip initialNoise;
     public AudioClip tickNoise;
 
-    private int damage = 15;
+    private int damage = 35;
+    private int growth = 3;
 
     private List<Collider> mobs = new List<Collider>();
     
+    private void LevelUp(float multiplier)
+    {
+        damage += (int) (multiplier * growth);
+    }
+
     private void OnTriggerEnter(Collider other) {
     	if (other.CompareTag("mortal")) {
             mobs.Add(other);

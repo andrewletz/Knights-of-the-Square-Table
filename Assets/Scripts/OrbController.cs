@@ -10,10 +10,10 @@ public class OrbController : MonoBehaviour
 
     private GameObject currentSpell;
     private int spellNumber; // 0 flame pillar, 1 implosion
-    private int flamePillarCd = 4;
+    private int flamePillarCd = 3;
     private bool canUseFlamePillar = true;
 
-    private int implosionCd = 6;
+    private int implosionCd = 5;
     private bool canUseImplosion = true;
 
     private GameObject UIflamePillarCd;

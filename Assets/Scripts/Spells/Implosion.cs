@@ -7,11 +7,17 @@ public class Implosion : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip initialNoise;
 
-    private int damage = 40;
+    private int damage = 70;
+    private int growth = 5;
     private float travelTime = 2.0f; // travel time in seconds towards center of spell
     private float damageDistance = 1.0f; // how close the mob needs to be to get damaged
 
     private List<Coroutine> coroutines = new List<Coroutine>();
+
+    private void LevelUp(float multiplier)
+    {
+        damage += (int)(multiplier * growth);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
