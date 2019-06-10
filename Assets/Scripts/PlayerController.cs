@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour {
 
 	public enum PlayerState {
@@ -9,6 +10,13 @@ public class PlayerController : MonoBehaviour {
 		attack,
 		interact
 	}
+
+    public AudioSource audioSource;
+    public AudioClip hit;
+    public AudioClip dash;
+    public AudioClip heal;
+    public AudioClip death;
+    private float volume = 0.7f;
 
     public PlayerState currentState;
     public float speed = 10.0f;
@@ -27,15 +35,15 @@ public class PlayerController : MonoBehaviour {
 		playerHealth = maxPlayerHealth;
 		healthBar = this.transform.Find("Bar");
 
-		// get our weapon object once at start time
-		for (int i = 0; i < transform.childCount; i++) {
+        // get our weapon object once at start time
+        for (int i = 0; i < transform.childCount; i++) {
 			Transform currentTransform = transform.GetChild(i).transform;
 			if (currentTransform.name == "Weapon") {
 				this.weapon = currentTransform.gameObject;
                 this.orb = currentTransform.GetChild(1).gameObject;
 			}
 		}
-	}
+    }
 
 	void FixedUpdate() {
         Vector3 mousePos = Input.mousePosition;
@@ -89,12 +97,14 @@ public class PlayerController : MonoBehaviour {
 	}
 
     public void Death() {
-    	GameObject gameManager = GameObject.Find("GameManager");
+        audioSource.PlayOneShot(death, volume);
+        GameObject gameManager = GameObject.Find("GameManager");
     	gameManager.GetComponent<GameManager>().RestartGame();
     	this.gameObject.SetActive(false);
     }
 
     public void Hit(int damage) {
+        audioSource.PlayOneShot(hit, volume);
         playerHealth = playerHealth - damage;
         float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);
         healthBar.localScale = new Vector3(healthPct, 1);
@@ -105,7 +115,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void Heal(int healAmount) {
-    	playerHealth += healAmount;
+        audioSource.PlayOneShot(heal, volume / 2);
+        playerHealth += healAmount;
     	playerHealth = Mathf.Min(playerHealth, 100);
 
      	float healthPct = Mathf.Max((float)playerHealth / maxPlayerHealth, 0.0f);

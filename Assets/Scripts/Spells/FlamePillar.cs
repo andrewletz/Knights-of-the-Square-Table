@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class FlamePillar : MonoBehaviour
 {
-	private int damage = 10;
+    public AudioSource audioSource;
+    public AudioClip initialNoise;
+    public AudioClip tickNoise;
+
+    private int damage = 15;
 
     private List<Collider> mobs = new List<Collider>();
     
@@ -22,8 +26,14 @@ public class FlamePillar : MonoBehaviour
         }
     }
 
+    private void PlayNoise()
+    {
+        audioSource.PlayOneShot(initialNoise);
+    }
+
     private void Tick()
     {
+        audioSource.PlayOneShot(tickNoise, 0.8f);
         foreach (Collider mob in mobs)
         {
             if (mob != null)

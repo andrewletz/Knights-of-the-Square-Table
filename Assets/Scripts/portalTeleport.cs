@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class portalTeleport : MonoBehaviour
+public class PortalTeleport : MonoBehaviour
 {
 	private GameObject gameManagerObject;
+    
+    public AudioClip portalEnter;
 
     void Start()
     {
@@ -13,7 +15,8 @@ public class portalTeleport : MonoBehaviour
 	
     private void OnTriggerEnter(Collider other) {
     	if (other.CompareTag("Player")) {
-    		gameManagerObject.GetComponent<GameManager>().NextLevel();
+            Camera.main.GetComponent<AudioSource>().PlayOneShot(portalEnter);
+            gameManagerObject.GetComponent<GameManager>().NextLevel();
             Destroy(this.gameObject);
     	}
     }

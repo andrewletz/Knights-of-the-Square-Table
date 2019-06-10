@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Implosion : MonoBehaviour
 {
-	private int damage = 40;
+    public AudioSource audioSource;
+    public AudioClip initialNoise;
+
+    private int damage = 40;
     private float travelTime = 2.0f; // travel time in seconds towards center of spell
     private float damageDistance = 1.0f; // how close the mob needs to be to get damaged
 
@@ -24,6 +27,11 @@ public class Implosion : MonoBehaviour
         {
             StopCoroutine(pull);
         }
+    }
+
+    private void PlayNoise()
+    {
+        audioSource.PlayOneShot(initialNoise);
     }
 
     IEnumerator PullTowardsPosition(Collider mob, Vector3 targetPos)
