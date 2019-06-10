@@ -6,6 +6,7 @@ public class PortalTeleport : MonoBehaviour
 {
 	private GameObject gameManagerObject;
     
+    //test
     public AudioClip portalEnter;
 
     void Start()

@@ -197,17 +197,18 @@ public class GameManager : MonoBehaviour
         HUD.transform.GetChild(1).GetComponent<Text>().text = "Kills:" + killCount;
 
         currentEnemyCount -= 1;
-        Debug.Log("    > Enemy count lowered to " +  currentEnemyCount);
-    	if (currentEnemyCount == 0){
+    	if (currentEnemyCount == 0) {
             if (dungeonLevel % 3 == 0){ // if its a boss level
                 IncreaseDifficulty();
             }
             SpawnPortal(EnemyPos);
             NextWave();
     	} 
-        else {
+        else
+        {
             enemiesLeftText.GetComponent<Text>().text = currentEnemyCount + " enemies left";
             StartCoroutine(FadeTextToZeroAlpha(2f, enemiesLeftText.GetComponent<Text>()));
+
             if (dungeonLevel % 3 == 0)
             {
                 SpawnHeart(EnemyPos);

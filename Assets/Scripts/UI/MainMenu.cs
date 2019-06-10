@@ -32,7 +32,7 @@ public class MainMenu : MonoBehaviour
 
         // Cursor.SetCursor(crosshairTexture, Vector2.zero, CursorMode.Auto);
 
-        SceneManager.LoadScene("Procedural-Generation-Test2");
+        SceneManager.LoadScene("MainGame");
     }
 
     public void QuitGame()
