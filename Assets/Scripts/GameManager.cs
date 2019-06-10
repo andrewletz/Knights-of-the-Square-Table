@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 	private int currentEnemyCount;
     private int levelMultiplier = 0;
     private int enemyType = 1;
+    private int[] enemyTypes = { 1, 2, 3, 4, 5 };
 
     private bool gamePaused = false;
 
@@ -27,10 +28,13 @@ public class GameManager : MonoBehaviour
     private GameObject fireSpellBackground;
     private GameObject magnetSpellBackground;
 
+    private GameObject splashText;
+
     void Start()
     {
         fireSpellBackground = GameObject.Find("FireSpellBackground");
         magnetSpellBackground = GameObject.Find("MagnetSpellBackground");
+        splashText = GameObject.Find("DungeonLevelSplash");
         swapSpellIcon();
 
     	currentEnemyCount = startingEnemyCount;
@@ -139,8 +143,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(pauseThenRestart());
     }
 
-
-
     public void PauseGame(){
         gamePaused = true;
         Time.timeScale = 0;
@@ -155,6 +157,27 @@ public class GameManager : MonoBehaviour
     public void NextLevel(){
         BuildLevel("dungeon" + dungeonLevel);
         HUD.transform.GetChild(0).GetComponent<Text>().text = "Dungeon Level:" + dungeonLevel;
+
+        if (dungeonLevel % 5 == 0)
+        {
+            splashText.GetComponent<Text>().text = "BOSS LEVEL";
+        } else
+        {
+            splashText.GetComponent<Text>().text = "Dungeon level " + dungeonLevel;
+        }
+        
+        StartCoroutine(FadeTextToZeroAlpha(2f, splashText.GetComponent<Text>()));
+    }
+
+    // found on https://forum.unity.com/threads/fading-in-out-gui-text-with-c-solved.380822/
+    public IEnumerator FadeTextToZeroAlpha(float t, Text i)
+    {
+        i.color = new Color(i.color.r, i.color.g, i.color.b, 1);
+        while (i.color.a > 0.0f)
+        {
+            i.color = new Color(i.color.r, i.color.g, i.color.b, i.color.a - (Time.deltaTime / t));
+            yield return null;
+        }
     }
 
     // Called by EnemyController to keep track of alive enemies
