@@ -9,7 +9,7 @@ public class MainMenu : MonoBehaviour
     public AudioSource source;
     public AudioClip song;
 
-    public GameObject gameManagerObject;
+    private GameObject gameManagerObject;
 
     public Texture2D cursorTexture;
 

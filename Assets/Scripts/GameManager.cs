@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject pauseScreen;
     public GameObject HUD;
 
-
+    private int killCount = 0;
 	private int currentEnemyCount;
     private int levelMultiplier = 0;
     private int enemyType = 1;
@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         fireSpellBackground = GameObject.Find("FireSpellBackground");
         magnetSpellBackground = GameObject.Find("MagnetSpellBackground");
+        swapSpellIcon();
 
     	currentEnemyCount = startingEnemyCount;
         BuildLevel("dungeon" + dungeonLevel);
@@ -68,16 +69,25 @@ public class GameManager : MonoBehaviour
     // Swap the background highlight for the spell
     void swapSpellIcon(){
 
-        if (currentSpell == 1){
+        if (currentSpell == 1)
+        {
             Color c = fireSpellBackground.GetComponent<Image>().color;
+
+            // set current one to opaque
             magnetSpellBackground.GetComponent<Image>().color = c;
-            c.a = 0.0f;
+            magnetSpellBackground.transform.GetChild(0).GetComponent<Image>().color = c;
+
+            c.a = 0.4f; // set other one to slightly transparent
             fireSpellBackground.GetComponent<Image>().color = c;
+            fireSpellBackground.transform.GetChild(0).GetComponent<Image>().color = c;
         } else {
             Color c = magnetSpellBackground.GetComponent<Image>().color;
             fireSpellBackground.GetComponent<Image>().color = c;
-            c.a = 0.0f;
+            fireSpellBackground.transform.GetChild(0).GetComponent<Image>().color = c;
+
+            c.a = 0.4f;
             magnetSpellBackground.GetComponent<Image>().color = c;
+            magnetSpellBackground.transform.GetChild(0).GetComponent<Image>().color = c;
         }
     }
 
@@ -140,13 +150,16 @@ public class GameManager : MonoBehaviour
     // Called by the portal to begin next level
     public void NextLevel(){
         BuildLevel("dungeon" + dungeonLevel);
-        HUD.GetComponentInChildren<Text>().text = "Dungeon Level: " + dungeonLevel;
+        HUD.transform.GetChild(0).GetComponent<Text>().text = "Dungeon Level:" + dungeonLevel;
     }
 
     // Called by EnemyController to keep track of alive enemies
     public void EnemyDeath(Vector3 EnemyPos)
     {
-    	currentEnemyCount -= 1;
+        killCount += 1;
+        HUD.transform.GetChild(1).GetComponent<Text>().text = "Kills:" + killCount;
+        Debug.Log(HUD.transform.GetChild(1).GetComponent<Text>().text);
+        currentEnemyCount -= 1;
     	if (currentEnemyCount == 0){
             if (enemyType == 5){
                 IncreaseDifficulty();
